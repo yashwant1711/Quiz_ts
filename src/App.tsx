@@ -4,7 +4,7 @@ import QuestionCard from './components/QuestionCard'
 import { fetchQuizQuestions } from './API'
 import {QuestionState, Difficulty } from './API'
 
-type AnswerObject = {
+export type AnswerObject = {
   question: string
   answer: string
   correct: boolean
@@ -20,7 +20,7 @@ function App() {
   const [score , setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
 
-  console.log(question)
+  // console.log(question)
   // console.log(fetchQuizQuestions(Total_Questions, Difficulty.EASY))
   const startTriva = async () =>{
     setLoading(true);
@@ -35,11 +35,34 @@ function App() {
   }
 
   const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) =>{
-    
+    if(!gameOver){
+      // user answer 
+      const answer = e.currentTarget.value;
+      // check answer against correct answer
+      const correctAnswer = question[number].correct_answer === answer;
+      // add score if answer is correct
+      if(correctAnswer){
+        setScore(prev => prev + 1);
+      }
+      // save answer in the array for user answers
+      const answerObject = {
+        question: question[number].question,
+        answer,
+        correct: correctAnswer,
+        correctAnswer: question[number].correct_answer
+      };
+      setUserAnswer((prev) => [...prev, answerObject]);
+    }
   }
 
   const nextQuestion = () =>{
-    
+    // move on to the next question if not the last question
+    const nextQuestion = number + 1;
+    if(nextQuestion === Total_Questions){
+      setGameOver(true);
+    }else{
+      setNumber(nextQuestion);
+    }
   }
 
   return (
@@ -48,7 +71,7 @@ function App() {
       {gameOver || userAnswer.length === Total_Questions ? (
       <button className='start' onClick={startTriva}>Start</button>
       ): null}
-      {!gameOver ? <p className='score'>Score: </p>: null}
+      {!gameOver ? <p className='score'>Score: {score} </p>: null}
       {loading && <p>Loading Questions...</p>}
       {!loading && !gameOver && (
           <QuestionCard
