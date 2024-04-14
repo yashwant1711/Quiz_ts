@@ -66,6 +66,7 @@ function App() {
   }
 
   return (
+    <>
     <div className='App'>
       <h1>React Quiz</h1>
       {gameOver || userAnswer.length === Total_Questions ? (
@@ -88,6 +89,7 @@ function App() {
       <button onClick={nextQuestion}>Next Question</button>
      ): null}
     </div>
+    </>
   )
 }
 
